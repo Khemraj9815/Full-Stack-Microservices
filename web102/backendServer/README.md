@@ -1,5 +1,7 @@
 git clone <repository_url>
+
 node server.js
+
 ## Code Explanation
 
 This code sets up a simple HTTP server using Node.js to handle CRUD operations for a collection of blog posts stored in a JSON file (`data.json`). Let's break down how the code works and explain each endpoint:

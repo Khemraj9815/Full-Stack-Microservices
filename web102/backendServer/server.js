@@ -27,13 +27,14 @@ function parseBody(req, res, next) {
 }
 
 const server = http.createServer(async (req, res) => {
+  // using POST method to add a new post
   if (req.method === 'POST' && req.url === '/users/add') {
     parseBody(req, res, async () => {
       try {
         const newPost = {
           id: Date.now(),
-          title: req.body.title,
-          content: req.body.content || '', 
+          name: req.body.name,
+          email: req.body.email || '', 
         };
         
         blogPosts.push(newPost);
@@ -48,7 +49,26 @@ const server = http.createServer(async (req, res) => {
         res.end('Internal Server Error');
       }
     });
-  } else if (req.method === 'PUT' && req.url.startsWith('/users/update')) {
+  } else if (req.url === '/' && req.method === 'GET') {
+    try {
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      res.end(JSON.stringify({message: 'hello'}));
+    } catch (error) {
+      console.error('An error occurred:', error);
+      res.writeHead(500, {'Content-Type': 'text/plain'});
+      res.end('Internal Server Error');
+    } 
+  } else if (req.url === '/users' && req.method === 'GET') {
+    try {
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      res.end(JSON.stringify(blogPosts));
+    } catch (error) {
+      console.error('An error occurred:', error);
+      res.writeHead(500, {'Content-Type': 'text/plain'});
+      res.end('Internal Server Error');
+    }
+  }  else if (req.method === 'PUT' && req.url.startsWith('/users/update')) {
+    // using PUT method to update a post
     parseBody(req, res, async () => {
       try {
         const urlParts = req.url.split('/');
@@ -76,9 +96,7 @@ const server = http.createServer(async (req, res) => {
         res.end('Internal Server Error');
       }
     });
-  } else if (req.method === 'GET') {
-    
-  } else {
+  }  else {
     res.writeHead(405, {'Content-Type': 'text/plain'});
     res.end('Method Not Allowed');
   }
